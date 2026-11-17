@@ -184,13 +184,27 @@ out-of-order webhooks, signature and replay rejection, retry handling, credit ho
 
 Any host that runs Laravel works. It needs:
 
-- a database (PostgreSQL or MySQL recommended; SQLite is fine for a demo),
+- a database (MySQL or PostgreSQL recommended; SQLite is fine for a demo),
 - a **queue worker** (`php artisan queue:work`) — generations are submitted from the queue,
 - the **scheduler** (`php artisan schedule:run` every minute) for the polling fallback,
-- `npm run build` during the build, and `php artisan migrate --force` on deploy,
+- `php artisan migrate --force` on deploy,
 - the environment variables above, using a **separate Pixelforge API key** for the deployed app, with its webhook
   URL set to `https://<your-domain>/webhooks/pixelforge`. `GET /v1/usage` is reported per key, so a dedicated key
   is what lets the report match Pixelforge exactly.
+
+The compiled assets in `public/build` are committed, so the server does not need Node. Run `npm run build` and
+commit the result when the frontend changes.
+
+### Shared hosting
+
+`deploy/shared-hosting.sh` deploys to shared hosting that has SSH and Composer (written for Hostinger's layout).
+It clones the repo next to the web root, installs dependencies, migrates, and points the web root at `public/`.
+There is no process manager on shared hosting, so the queue worker is a cron job that runs for 55 seconds every
+minute; the script prints the two cron lines to add.
+
+```bash
+bash deploy/shared-hosting.sh forge.example.com
+```
 
 ## With more time
 
