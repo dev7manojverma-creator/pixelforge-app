@@ -63,8 +63,9 @@ function imageFailed(event) {
             :key="generation.id"
             class="flex flex-col overflow-hidden rounded-xl border border-stone-200 bg-white shadow-xs"
         >
-            <div class="grid aspect-square place-items-center bg-stone-100 p-3">
-                <div v-if="generation.status === 'succeeded' && generation.image_url" data-image class="group size-full">
+            <div class="relative grid aspect-square place-items-center bg-stone-100 p-3">
+                <!-- Positioned absolutely so a portrait or landscape image is fitted inside the square, not stretching the card. -->
+                <div v-if="generation.status === 'succeeded' && generation.image_url" data-image class="group absolute inset-3">
                     <a :href="generation.image_url" target="_blank" rel="noopener" class="block size-full group-data-broken:hidden">
                         <img :src="generation.image_url" :alt="generation.prompt" class="size-full rounded-md object-contain" @error="imageFailed" />
                     </a>
